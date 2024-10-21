@@ -17,3 +17,6 @@ class DBManager:
 
     async def commit(self):
         await self.session.commit()
+
+    async def execute(self, query):
+        return await self.session.execute(query)

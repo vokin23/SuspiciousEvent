@@ -5,7 +5,8 @@ from app.init import redis_manager
 from fastapi import FastAPI, APIRouter
 from fastapi.openapi.docs import get_swagger_ui_html
 
-from app.routers.crud import suspicious_event_crud_router
+from app.routers.suspicious_event import suspicious_event_crud_router
+from app.routers.type_event import type_event_crud_router
 
 
 @asynccontextmanager
@@ -19,9 +20,10 @@ async def lifespan(add: FastAPI):
 
 main_router = APIRouter(prefix='/v1')
 
-main_router.include_router(suspicious_event_crud_router)
+main_router.include_router(suspicious_event_crud_router, tags=["CRUD Suspicious Event"])
+main_router.include_router(type_event_crud_router, tags=["CRUD Type Event"])
 app = FastAPI(lifespan=lifespan)
-app.include_router(main_router, tags=["CRUD"])
+app.include_router(main_router)
 
 
 

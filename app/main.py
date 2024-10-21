@@ -1,14 +1,28 @@
 import uvicorn
+from contextlib import asynccontextmanager
+
+from app.init import redis_manager
 from fastapi import FastAPI, APIRouter
 from fastapi.openapi.docs import get_swagger_ui_html
 
 from app.routers.crud import suspicious_event_crud_router
 
+
+@asynccontextmanager
+async def lifespan(add: FastAPI):
+    await redis_manager.redis_connect()
+    print("Connecting to Redis")
+    yield
+    await redis_manager.redis_close()
+    print("Disconnecting from Redis")
+
+
 main_router = APIRouter(prefix='/v1')
 
 main_router.include_router(suspicious_event_crud_router)
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 app.include_router(main_router, tags=["CRUD"])
+
 
 
 @main_router.get("/docs", include_in_schema=False)

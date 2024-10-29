@@ -2,7 +2,7 @@ from sqlalchemy import String, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 from datetime import datetime
 
-from app.datebase import Base
+from app.database import Base
 
 class TypeEvent(Base):
     __tablename__ = 'type_event'

@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import Depends
 
-from app.datebase import async_session_maker
+from app.database import async_session_maker
 from app.utils.db_manager import DBManager
 
 

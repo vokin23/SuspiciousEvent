@@ -2,7 +2,8 @@ from pydantic import BaseModel
 
 
 class AuthSchema(BaseModel):
-    user_id: int
+    login: str
+    password: str
 
 class AuthResponseSchema(BaseModel):
     access_token_sem: str

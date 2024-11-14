@@ -18,9 +18,11 @@ async def login(
         response: Response,
         db: DBDep
 ) -> AuthResponseSchema:
-    access_token_sem = await AuthRepository(db).auth(data)
+    access_token_data = await AuthRepository(db).auth(data)
+    access_token_sem = access_token_data["access_token_sem"]
     if access_token_sem is None:
         raise HTTPException(status_code=401, detail="Access forbidden: User is not root")
     else:
         response.set_cookie("access_token_sem", access_token_sem)
+        print(AuthResponseSchema(access_token_sem=access_token_sem))
         return AuthResponseSchema(access_token_sem=access_token_sem)

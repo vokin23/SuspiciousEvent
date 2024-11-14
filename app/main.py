@@ -2,10 +2,11 @@ import uvicorn
 from contextlib import asynccontextmanager
 
 from app.init import redis_manager
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, Depends
 from fastapi.openapi.docs import get_swagger_ui_html
 
 from app.routers.auth import auth_router, ping_router
+from app.routers.dependencies import get_current_user
 from app.routers.suspicious_event import suspicious_event_crud_router
 from app.routers.type_event import type_event_crud_router
 
@@ -22,8 +23,8 @@ async def lifespan(add: FastAPI):
 main_router = APIRouter(prefix='/v1')
 
 main_router.include_router(auth_router, tags=["Авторизация и аутентификация"])
-main_router.include_router(suspicious_event_crud_router, tags=["CRUD Suspicious Event"])
-main_router.include_router(type_event_crud_router, tags=["CRUD Type Event"])
+main_router.include_router(suspicious_event_crud_router, tags=["CRUD Suspicious Event"], dependencies=[Depends(get_current_user)])
+main_router.include_router(type_event_crud_router, tags=["CRUD Type Event"], dependencies=[Depends(get_current_user)])
 
 main_router.include_router(ping_router, tags=["Проверка доступности"])
 app = FastAPI(lifespan=lifespan)

@@ -18,7 +18,6 @@ class SuspiciousEvent(Base):
     __tablename__ = 'suspicious_event'
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    name_target_model: Mapped[str] = mapped_column(String(100))
     type_event: Mapped[int] = mapped_column(ForeignKey('type_event.id'))
     created_at: Mapped[str] = mapped_column(String(255), default=None, nullable=True)
     was_notified: Mapped[bool] = mapped_column(default=False)

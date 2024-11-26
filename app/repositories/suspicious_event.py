@@ -1,6 +1,5 @@
-from datetime import datetime
 from typing import List
-
+from datetime import datetime
 from fastapi import HTTPException
 from sqlalchemy import insert, select
 
@@ -19,7 +18,15 @@ class SuspiciousEventRepository(BaseRepository):
         type_event = await self.session.execute(type_event_stmt)
         type_event = type_event.scalar()
         if type_event is None:
-            raise HTTPException(status_code=404, detail=f"TypeEvent with name en {data.name_target_model} not found")
+            new_type_event_stmt = insert(TypeEvent).values(
+                name_en=data.name_target_model,
+                name_ru='',
+                description='',
+                status=False
+            )
+            await self.session.execute(new_type_event_stmt)
+            await self.session.commit()
+            raise HTTPException(status_code=404, detail=f"TypeEvent with name en {data.name_target_model} not active")
         add_data_stmt = insert(self.model).values(
             type_event=type_event.id,
             created_at=str(datetime.now()),

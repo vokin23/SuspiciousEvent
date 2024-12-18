@@ -8,7 +8,7 @@ class TypeEvent(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name_en: Mapped[str] = mapped_column(String(100), unique=True)
-    name_ru: Mapped[str] = mapped_column(String(100), unique=True)
+    name_ru: Mapped[str] = mapped_column(String(100))
     description: Mapped[str] = mapped_column(String(255), nullable=True, default=None)
     status: Mapped[bool] = mapped_column(default=False)
 

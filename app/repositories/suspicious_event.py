@@ -17,16 +17,27 @@ class SuspiciousEventRepository(BaseRepository):
         type_event_stmt = select(TypeEvent).filter_by(name_en=data.name_target_model, status=True)
         type_event = await self.session.execute(type_event_stmt)
         type_event = type_event.scalar()
+
         if type_event is None:
-            new_type_event_stmt = insert(TypeEvent).values(
-                name_en=data.name_target_model,
-                name_ru='',
-                description='',
-                status=False
-            )
-            await self.session.execute(new_type_event_stmt)
-            await self.session.commit()
-            raise HTTPException(status_code=404, detail=f"TypeEvent with name en {data.name_target_model} not active")
+            # Check if a TypeEvent with the same name_en already exists
+            existing_type_event_stmt = select(TypeEvent).filter_by(name_en=data.name_target_model)
+            existing_type_event = await self.session.execute(existing_type_event_stmt)
+            existing_type_event = existing_type_event.scalar()
+
+            if existing_type_event is None:
+                new_type_event_stmt = insert(TypeEvent).values(
+                    name_en=data.name_target_model,
+                    name_ru='',
+                    description='',
+                    status=False
+                ).returning(TypeEvent)
+                await self.session.execute(new_type_event_stmt)
+                await self.session.commit()
+                type_event = await self.session.execute(type_event_stmt)
+                type_event = type_event.scalar()
+            else:
+                type_event = existing_type_event
+
         add_data_stmt = insert(self.model).values(
             type_event=type_event.id,
             created_at=str(datetime.now()),

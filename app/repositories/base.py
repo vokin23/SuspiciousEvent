@@ -37,7 +37,6 @@ class BaseRepository:
         await self.session.commit()
         return model
 
-
     async def delete(self, **filter_by):
         delete_stmt = delete(self.model).filter_by(**filter_by)
         if not await self.get_one_or_none(**filter_by):

@@ -1,4 +1,4 @@
-from app.repositories.suspicious_event import SuspiciousEventRepository
+from app.repositories.suspicious_event import SuspiciousEventRepository, TypeEventRepository
 
 
 class DBManager:
@@ -7,7 +7,7 @@ class DBManager:
 
     async def __aenter__(self):
         self.session = self.session_factory()
-
+        self.type_event = TypeEventRepository(self.session)
         self.suspicious_event = SuspiciousEventRepository(self.session)
         return self
 

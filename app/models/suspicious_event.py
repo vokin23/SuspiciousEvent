@@ -3,6 +3,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base
 
+
 class TypeEvent(Base):
     __tablename__ = 'type_event'
 

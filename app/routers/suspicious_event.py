@@ -1,49 +1,49 @@
 from typing import List
 
 from fastapi import APIRouter
-from fastapi.params import Query
-
-from app.repositories.suspicious_event import SuspiciousEventRepository
 
 from app.routers.dependencies import DBDep
-from app.schemas.suspicious_event import SuspiciousEventCreateSchema, SuspiciousEventBaseSchema, \
-    SuspiciousEventPatchSchemas
+from app.schemas.suspicious_event import PostSuspiciousEventSchema, SuspiciousEventSchema, TypeEvenCreatSchema, \
+    TypeEventSchema, TypeEventPatchSchema
+from app.services.suspicious_event import SuspiciousEventService, TypeEventRepositoryService
 
 suspicious_event_crud_router = APIRouter(prefix="/suspicious_event")
 
 
-# Работа с моделью SuspiciousEvent
-@suspicious_event_crud_router.get("/get_suspicious_events", summary="Получение подозрительных событий")
-async def get_suspicious_events(db: DBDep) -> List[SuspiciousEventBaseSchema]:
-    return await SuspiciousEventRepository(db).get_all()
+@suspicious_event_crud_router.post("", summary="Создание подозрительного события")
+async def create_suspicious_event(data: PostSuspiciousEventSchema, db: DBDep):
+    return await SuspiciousEventService(db).create_suspicious_event_service(data)
 
 
-@suspicious_event_crud_router.get("/get_suspicious_event", summary="Получение подозрительного события")
-async def get_suspicious_event(db: DBDep, suspicious_event_id: int = Query(description='ID подозрительного события')) -> SuspiciousEventBaseSchema:
-    return await SuspiciousEventRepository(db).get_one_or_none(id=suspicious_event_id)
+@suspicious_event_crud_router.get("", summary="Получение списка подозрительных событий")
+async def get_suspicious_events(db: DBDep) -> List[SuspiciousEventSchema]:
+    return await SuspiciousEventService(db).get_suspicious_events_service()
 
 
-
-@suspicious_event_crud_router.post("/create_suspicious_event", summary="Создание подозрительного события")
-async def create_suspicious_event(data: SuspiciousEventCreateSchema, db: DBDep):
-    return await SuspiciousEventRepository(db).add(data)
+type_event_crud_router = APIRouter(prefix="/type_event")
 
 
-
-@suspicious_event_crud_router.put("/update_suspicious_event", summary="Обновление подозрительного события")
-async def update_suspicious_event(data: SuspiciousEventCreateSchema,
-                                  db: DBDep,
-                                  suspicious_event_id: int = Query(description='ID подозрительного события')) -> SuspiciousEventBaseSchema:
-    return await SuspiciousEventRepository(db).update(data, id=suspicious_event_id)
+@type_event_crud_router.post("", summary="Создание типа события")
+async def create_type_event(data: TypeEvenCreatSchema, db: DBDep) -> TypeEventSchema:
+    return await TypeEventRepositoryService(db).create_type_event_service(data)
 
 
-@suspicious_event_crud_router.patch("/patch_suspicious_event", summary="Обновление подозрительного события")
-async def patch_suspicious_event(data: SuspiciousEventPatchSchemas,
-                                 db: DBDep,
-                                 suspicious_event_id: int = Query(description='ID подозрительного события')) -> SuspiciousEventBaseSchema:
-    return await SuspiciousEventRepository(db).patch(data, id=suspicious_event_id)
+@type_event_crud_router.get("", summary="Получение типов событий")
+async def get_type_events(db: DBDep) -> List[TypeEventSchema]:
+    return await TypeEventRepositoryService(db).get_all_service()
 
 
-@suspicious_event_crud_router.delete("/delete_suspicious_event", summary="Удаление подозрительного события")
-async def delete_suspicious_event(db: DBDep, suspicious_event_: int = Query(description='ID подозрительного события')):
-    return await SuspiciousEventRepository(db).delete(id=suspicious_event_)
+@type_event_crud_router.get("/{type_event_id}", summary="Получение типа события")
+async def get_type_event(db: DBDep, type_event_id: int) -> TypeEventSchema:
+    return await TypeEventRepositoryService(db).get_one_or_none_service(id=type_event_id)
+
+
+@type_event_crud_router.patch("/{type_event_id}", summary="Обновление типа события")
+async def patch_type_event(data: TypeEventPatchSchema, db: DBDep,
+                           type_event_id: int) -> TypeEventSchema:
+    return await TypeEventRepositoryService(db).patch_service(data, id=type_event_id)
+
+
+@type_event_crud_router.delete("/{type_event_id}", summary="Удаление типа события")
+async def delete_type_event(db: DBDep, type_event_id: int) -> TypeEventSchema:
+    return await TypeEventRepositoryService(db).delete_type_event_service(id=type_event_id)

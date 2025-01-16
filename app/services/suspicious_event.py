@@ -21,10 +21,10 @@ class SuspiciousEventService(BaseService):
             request = data.request
             was_notified = True
             description_event = None
-            deleted_user_id = request.url.split('/')[-1]
-            if request.method == 'DELETE':
+            deleted_user_id = request.get("url").split('/')[-1]
+            if request.get("method") == 'DELETE':
                 description_event = f"User {user_id} deleted user: {deleted_user_id}. {type_event} event type."
-            elif request.method == 'PATCH':
+            elif request.get("method") == 'PATCH':
                 description_event = f"System user {user_id} patch user: {deleted_user_id}. {type_event} event type."
 
             await self.db.suspicious_event.add(CreateSuspiciousEventSchema(type_event=type_event_id,

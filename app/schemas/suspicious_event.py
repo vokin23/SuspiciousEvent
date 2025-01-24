@@ -8,11 +8,11 @@ class PostSuspiciousEventSchema(BaseModel):
 
 
 class CreateSuspiciousEventSchema(BaseModel):
-    type_event: int
-    created_at: str
-    was_notified: bool
-    description_event: str
-    user_initiated_event: int
+    type_event: int | None
+    created_at: str | None
+    was_notified: bool | None
+    description_event: str | None
+    user_initiated_event: int | None
 
 
 class SuspiciousEventSchema(BaseModel):

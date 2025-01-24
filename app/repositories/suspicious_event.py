@@ -11,7 +11,7 @@ class SuspiciousEventRepository(BaseRepository):
     model = SuspiciousEvent
 
     async def add(self, data: CreateSuspiciousEventSchema):
-        query = select(self.model).values(data.model_dump())
+        query = insert(self.model).values(data.model_dump())
         await self.session.execute(query)
         await self.session.commit()
 

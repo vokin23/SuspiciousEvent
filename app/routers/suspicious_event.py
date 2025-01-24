@@ -12,7 +12,7 @@ suspicious_event_crud_router = APIRouter(prefix="/suspicious_event")
 
 @suspicious_event_crud_router.post("", summary="Создание подозрительного события")
 async def create_suspicious_event(data: PostSuspiciousEventSchema, db: DBDep):
-    return await SuspiciousEventService(db).create_suspicious_event_service(data)
+    await SuspiciousEventService(db).create_suspicious_event_service(data)
 
 
 @suspicious_event_crud_router.get("", summary="Получение списка подозрительных событий")

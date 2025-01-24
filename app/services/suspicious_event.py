@@ -14,14 +14,14 @@ class SuspiciousEventService(BaseService):
             type_event = data.right_name.lower()
             bd_type_event = await self.db.type_event.get_type_event_by_filter(name_en=type_event)
             if bd_type_event:
-                type_event_id = bd_type_event.id
+                type_event_id = bd_type_event[0].id
             else:
-                type_event_id = await self.db.type_event.add(
-                    TypeEvenCreatSchema(name_en=type_event, name_ru="", description="", status=False)).id
+                type_event_id = (await self.db.type_event.add(
+                    TypeEvenCreatSchema(name_en=type_event, name_ru="", description="", status=False))).id
             request = data.request
             was_notified = True
             description_event = None
-            deleted_user_id = request.get("url").split('/')[-1]
+            deleted_user_id = request.get("path").split('/')[-1]
             if request.get("method") == 'DELETE':
                 description_event = f"User {user_id} deleted user: {deleted_user_id}. {type_event} event type."
             elif request.get("method") == 'PATCH':

@@ -21,5 +21,5 @@ class SuspiciousEvent(Base):
     type_event: Mapped[int] = mapped_column(ForeignKey('type_event.id'))
     created_at: Mapped[str] = mapped_column(String(255), default=None, nullable=True)
     was_notified: Mapped[bool] = mapped_column(default=False)
-    description_event: Mapped[str] = mapped_column(String(255))
+    description_event: Mapped[str] = mapped_column(String(255), default=None, nullable=True)
     user_initiated_event: Mapped[int] = mapped_column()
